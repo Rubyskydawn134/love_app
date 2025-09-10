@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tỏ tình</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #ffeef9;
+        overflow: hidden;
+      }
+
+      #question {
+        font-size: 20px;
+        margin-top: 50px;
+      }
+
+      .button {
+        font-size: 16px;
+        padding: 10px 20px;
+        margin: 10px;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        cursor: pointer;
+      }
+
+      #agree {
+        background-color: #ffb6c1;
+      }
+      #disagree {
+        background-color: #ff69b4;
+      }
+
+      #message {
+        margin-top: 20px;
+        font-size: 16px;
+      }
+
+      /* Trái tim rơi */
+      .heart {
+        position: absolute;
+        font-size: 20px;
+        animation: fall 3s linear forwards;
+      }
+
+      @keyframes fall {
+        0% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(500px);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="question">Chị đồng ý làm người yêu em nha?</div>
+    <button id="agree" class="button">Đồng ý</button>
+    <button id="disagree" class="button">Không</button>
+    <div id="message"></div>
+
+    <script>
+      const agreeBtn = document.getElementById("agree");
+      const disagreeBtn = document.getElementById("disagree");
+      const messageLabel = document.getElementById("message");
+
+      let no_count = 0;
+
+      // Màu cute pastel
+      const cute_colors = [
+        "#FFB6C1",
+        "#FFD1DC",
+        "#FFC0CB",
+        "#FF69B4",
+        "#FF99CC",
+        "#FFCCEE",
+        "#DA70D6",
+        "#FFA07A",
+        "#FF4500",
+      ];
+      const message_colors = [
+        "#FF69B4",
+        "#FF1493",
+        "#DB7093",
+        "#FF4500",
+        "#FF6347",
+        "#FF7F50",
+        "#FF8C00",
+        "#FFA500",
+      ];
+
+      function createHeart() {
+        const heart = document.createElement("div");
+        heart.textContent = "💖";
+        heart.className = "heart";
+        heart.style.left = Math.random() * window.innerWidth + "px";
+        heart.style.fontSize = 10 + Math.random() * 20 + "px";
+        heart.style.color =
+          cute_colors[Math.floor(Math.random() * cute_colors.length)];
+        document.body.appendChild(heart);
+
+        const dx = (Math.random() - 0.5) * 6;
+        const dy = 2 + Math.random() * 3;
+        let y = 0;
+        function fall() {
+          y += dy;
+          let x = parseFloat(heart.style.left) + dx;
+          heart.style.top = y + "px";
+          heart.style.left = x + "px";
+          if (y < window.innerHeight) requestAnimationFrame(fall);
+          else heart.remove();
+        }
+        fall();
+      }
+
+      agreeBtn.addEventListener("click", () => {
+        messageLabel.textContent = "Em biết chị sẽ đồng ý mà 💖";
+        messageLabel.style.color =
+          message_colors[Math.floor(Math.random() * message_colors.length)];
+
+        // Tạo 3 đợt trái tim rơi toàn màn hình
+        for (let i = 0; i < 3; i++) {
+          setTimeout(() => {
+            for (let j = 0; j < 15; j++) {
+              createHeart();
+            }
+          }, i * 200);
+        }
+      });
+
+      disagreeBtn.addEventListener("click", () => {
+        no_count++;
+        // Tăng size nút đồng ý
+        let size = parseInt(window.getComputedStyle(agreeBtn).fontSize) + 6;
+        agreeBtn.style.fontSize = size + "px";
+        agreeBtn.style.backgroundColor =
+          cute_colors[Math.floor(Math.random() * cute_colors.length)];
+
+        // Thu nhỏ nút Không
+        let size_no =
+          parseInt(window.getComputedStyle(disagreeBtn).fontSize) - 1;
+        if (size_no < 8) size_no = 8;
+        disagreeBtn.style.fontSize = size_no + "px";
+
+        // Thông báo dựa theo no_count
+        let color =
+          message_colors[Math.floor(Math.random() * message_colors.length)];
+        if (no_count == 2)
+          messageLabel.textContent =
+            "😳 Giỡn quài, đồng ý đi người ta còn biết nữa";
+        else if (no_count == 3)
+          messageLabel.textContent = "😮‍💨 Nè nè!!, quá tam ba bận nha chjjjjj";
+        else if (no_count == 4)
+          messageLabel.textContent =
+            "😳 Chời chời, chị thua Tề Thiên mỗi cái vòng kim cô thôi đó 🐒";
+        else if (no_count == 5)
+          messageLabel.textContent = "🙄 ủaa ủaa, chị ơiiii!!";
+        else if (no_count == 7)
+          messageLabel.textContent =
+            "☺  Định mệnh đã an bài rồi, chị chỉ có việc chấp nhận thôi.";
+        else if (no_count == 8)
+          messageLabel.textContent =
+            "☺  Chị không đồng ý là chị đang đi ngược lại ý trời đấy. Chị có muốn thách thức vũ trụ không?";
+        else if (no_count == 9) {
+          messageLabel.textContent =
+            "☺  Đây không phải là sự lựa chọn, đây là số phận,\n mà số phận chị là có cuộc sống màu hồng, nên chị buộc phải đồng ý🥰";
+          disagreeBtn.style.display = "none";
+        }
+        messageLabel.style.color = color;
+
+        // Nút Không nhảy lung tung
+        disagreeBtn.style.position = "absolute";
+        let new_x =
+          Math.random() * (window.innerWidth - disagreeBtn.offsetWidth);
+        let new_y = 50 + Math.random() * (window.innerHeight - 100);
+        disagreeBtn.style.left = new_x + "px";
+        disagreeBtn.style.top = new_y + "px";
+      });
+    </script>
+  </body>
+</html>
